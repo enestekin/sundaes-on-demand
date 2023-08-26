@@ -15,7 +15,7 @@ describe("SummaryForm Component", () => {
     expect(confirmButtonElement).toBeDisabled();
   });
 
-  it("should enable the confirm button on first click and disable on second click", () => {
+  it("should enable the confirm button on first click and disable on second click", async () => {
     render(<SummaryForm />);
     const termsEndConditionsElement = screen.getByRole("checkbox", {
       name: /terms and conditions/i,
@@ -24,10 +24,32 @@ describe("SummaryForm Component", () => {
       name: /confirm order/i,
     });
 
-    userEvent.click(termsEndConditionsElement);
+    await userEvent.click(termsEndConditionsElement);
     expect(confirmButtonElement).toBeEnabled();
 
-    userEvent.click(termsEndConditionsElement);
+    await userEvent.click(termsEndConditionsElement);
     expect(confirmButtonElement).toBeDisabled();
+  });
+
+  it("should popover respond to hover", async () => {
+    render(<SummaryForm />);
+
+    const nullPopover = screen.queryByText(
+      /no ice cream will actually be delivered/i
+    );
+    expect(nullPopover).not.toBeInTheDocument();
+
+    const termsAndConditions = screen.getByText(/terms and conditions/i);
+    await userEvent.hover(termsAndConditions);
+
+    const popover = screen.getByText(
+      /no ice cream will actually be delivered/i
+    );
+
+    expect(popover).toBeInTheDocument();
+
+    await userEvent.unhover(termsAndConditions);
+
+    expect(popover).not.toBeInTheDocument();
   });
 });
