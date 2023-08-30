@@ -1,4 +1,4 @@
-import Options from "./Option";
+import Options from "./Options";
 
 const OrderEntry = () => {
   return (
